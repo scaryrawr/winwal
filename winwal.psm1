@@ -41,7 +41,7 @@ function Get-ScriptDirectory
 function Add-WalTemplates {
     $sourceDir = "$(Get-ScriptDirectory)/templates"
     if (!(Test-Path -Path "$HOME/.config/wal/templates")) {
-        New-Item -Path "$HOME/.config/wal/templates"
+        New-Item -Path "$HOME/.config/wal/templates" -ItemType Directory -ErrorAction SilentlyContinue
     }
 
     Get-ChildItem -Path $sourceDir | ForEach-Object {
