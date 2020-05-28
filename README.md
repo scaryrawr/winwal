@@ -39,3 +39,6 @@ Notes: `Update-WalCommandPrompt` will download [ColorTool](https://devblogs.micr
 Use [`pip`](https://pypi.org/project/pip/) to install:
 - [pywal](https://github.com/dylanaraps/pywal)
 - [colorthief](https://github.com/fengsp/color-thief-py)
+
+## VS Code
+- [wal-theme](https://marketplace.visualstudio.com/items?itemName=dlasagno.wal-theme)
