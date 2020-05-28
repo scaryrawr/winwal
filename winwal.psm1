@@ -90,7 +90,7 @@ $schemes.Add($(Get-Content "$HOME/.cache/wal/windows-terminal.json" | ConvertFro
 $configData.schemes = $schemes
 
 # Set default theme as wal
-$configData.profiles.defaults.colorScheme = 'wal'
+$configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name colorScheme -Value 'wal' -Force
 
 # Write config to disk
 $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
