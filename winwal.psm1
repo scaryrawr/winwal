@@ -110,10 +110,13 @@ if ($Image) {
 # Add our templates to wal configuration
 Add-WalTemplates
 
-# Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
-wal -n -i $img --backend colorthief
+$tempImg = "$env:TEMP/$(Split-Path $img -leaf)"
 
-# TODO: Clean up colorthief json file
+# Use temp location, default backgrounds are in a write protected directory
+Copy-Item -Path $img -Destination $tempImg
+
+# Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
+wal -n -i $tempImg --backend colorthief
 
 # Set the wallpaper
 if ($Image) {
