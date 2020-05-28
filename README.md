@@ -5,6 +5,12 @@ A wrapper around [pywal](https://github.com/dylanaraps/pywal) for Windows.
 ![Cycle Image Demo](./assets/demo.gif)
 Art by [YuumeiArt](https://www.yuumeiart.com/)
 
+## Dependencies
+
+Use [`pip`](https://pypi.org/project/pip/) to install:
+- [pywal](https://github.com/dylanaraps/pywal)
+- [colorthief](https://github.com/fengsp/color-thief-py)
+
 ## Installing
 
 Clone the repository and update your powershell profile to have:
@@ -36,12 +42,6 @@ Update-WalCommandPrompt
 ```
 
 Notes: `Update-WalCommandPrompt` will download [ColorTool](https://devblogs.microsoft.com/commandline/introducing-the-windows-console-colortool/) and use it to set the new default color schemes.
-
-## Dependencies
-
-Use [`pip`](https://pypi.org/project/pip/) to install:
-- [pywal](https://github.com/dylanaraps/pywal)
-- [colorthief](https://github.com/fengsp/color-thief-py)
 
 ## VS Code
 - [wal-theme](https://marketplace.visualstudio.com/items?itemName=dlasagno.wal-theme)
