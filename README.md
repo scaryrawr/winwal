@@ -1,6 +1,9 @@
-# WinWAL
+# winwal
 
 A wrapper around [pywal](https://github.com/dylanaraps/pywal) for Windows.
+
+![Cycle Image Demo](./assets/demo.gif)
+Art by [YuumeiArt](https://www.yuumeiart.com/)
 
 ## Installing
 
