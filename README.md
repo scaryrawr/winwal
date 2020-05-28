@@ -31,12 +31,12 @@ code $profile
 
 ## Using
 
-To update wal cache using the current wallpaper:
+To update wal cache Windows Terminal Color Scheme using the current wallpaper:
 ```powershell
 Update-WalTheme
 ```
 
-To update wal cache, Windows-Terminal Color Scheme, and set the desktop wallpaper:
+To update wal cache, Windows Terminal Color Scheme, and set the desktop wallpaper:
 ```powershell
 Update-WalTheme -Image .\path\to\new\background.jpg
 ```
@@ -52,6 +52,16 @@ Update-WalCommandPrompt
 ```
 
 Notes: `Update-WalCommandPrompt` will download [ColorTool](https://devblogs.microsoft.com/commandline/introducing-the-windows-console-colortool/) and use it to set the new default color schemes.
+
+## Keep WSL in sync
+
+I have pywal installed in WSL and create a symbolic link in WSL so I only have to update in Windows and it gets mirrored in WSL:
+
+```sh
+ln -s /mnt/c/Users/username/.cache/wal ~/.cache/wal
+```
+
+There's also instructions in [pywal](https://github.com/dylanaraps/pywal) on setting up your dot files that need to be followed (look for .bashrc instructions).
 
 ## VS Code Plugins Used
 - [wal-theme](https://marketplace.visualstudio.com/items?itemName=dlasagno.wal-theme)
