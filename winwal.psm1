@@ -103,7 +103,8 @@ $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
 function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
-        [string]$Image
+        [string]$Image,
+        [switch]$Light
     )
 
 $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
@@ -120,7 +121,12 @@ $tempImg = "$env:TEMP/$(Split-Path $img -leaf)"
 Copy-Item -Path $img -Destination $tempImg
 
 # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
-wal -n -i $tempImg --backend colorthief
+if ($Light) {
+    wal -n -l -i $tempImg --backend colorthief
+}
+else {
+    wal -n -i $tempImg --backend colorthief
+}
 
 # Set the wallpaper
 if ($Image) {
