@@ -122,10 +122,10 @@ Copy-Item -Path $img -Destination $tempImg
 # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
 $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
 if ($light -gt 0) {
-    wal -n -l -i $tempImg --backend colorthief
+    wal -n -e -l -s -t -i $tempImg --backend colorthief
 }
 else {
-    wal -n -i $tempImg --backend colorthief
+    wal -n -e -s -t -i $tempImg --backend colorthief
 }
 
 # Set the wallpaper
