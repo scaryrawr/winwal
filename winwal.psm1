@@ -64,11 +64,9 @@ function Update-WalCommandPrompt {
 
     Copy-Item -Path "$HOME/.cache/wal/wal-prompt.ini" -Destination "$schemesDir/wal.ini"
     & $colorTool -d wal.ini
-
 }
 
 function Update-WalTerminal {
-
     $terminalProfile = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
 
     if (!(Test-Path $terminalProfile)) {
@@ -102,7 +100,8 @@ function Update-WalTerminal {
 function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
-        [string]$Image
+        [string]$Image,
+        [ValidateSet('colorthief', 'colorz', 'haishoku')]$Backend = 'colorthief'
     )
 
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
@@ -121,10 +120,10 @@ function Update-WalTheme {
     # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
     $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
     if ($light -gt 0) {
-        wal -n -e -l -s -t -i $tempImg --backend colorthief
+        wal -n -e -l -s -t -i $tempImg --backend $Backend
     }
     else {
-        wal -n -e -s -t -i $tempImg --backend colorthief
+        wal -n -e -s -t -i $tempImg --backend $Backend
     }
 
     # Set the wallpaper
