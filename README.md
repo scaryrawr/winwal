@@ -7,13 +7,22 @@ Art from [wallpaperhub](https://wallpaperhub.app/)
 
 ## Dependencies
 
+Only 1 backend is needed to get started, but each backend will provide slightly different color schemes.
+
+pywal supports more backends, but I have not tried figuring them all out on Windows yet.
+
 Use [`pip`](https://pypi.org/project/pip/) to install:
 - [pywal](https://github.com/dylanaraps/pywal)
 - [colorthief](https://github.com/fengsp/color-thief-py)
+- [colorz](https://github.com/metakirby5/colorz)
+- [haishoku](https://github.com/LanceGin/haishoku)
 
 ```powershell
+winget install Python.Python
 pip install pywal
 pip install colorthief
+pip install colorz
+pip install haishoku
 ```
 
 ## Installing
