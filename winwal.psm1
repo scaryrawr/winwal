@@ -63,7 +63,7 @@ function Update-WalCommandPrompt {
     }
 
     Copy-Item -Path "$HOME/.cache/wal/wal-prompt.ini" -Destination "$schemesDir/wal.ini"
-    & $colorTool -d wal.ini
+    & $colorTool -b wal.ini
 }
 
 function Update-WalTerminal {
