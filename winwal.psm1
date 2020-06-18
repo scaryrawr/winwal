@@ -67,6 +67,7 @@ function Update-WalCommandPrompt {
 }
 
 function Update-WalTerminal {
+    $terminalDir = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
     $terminalProfile = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
 
     if (!(Test-Path $terminalProfile)) {
@@ -74,8 +75,10 @@ function Update-WalTerminal {
         return
     }
 
+    Copy-Item -Path $terminalProfile -Destination "$terminalDir/settings.json.bak"
+
     # Load existing profile
-    $configData = (Get-Content -Path $terminalProfile | ConvertFrom-Json)[0]
+    $configData = (Get-Content -Path $terminalProfile | ConvertFrom-Json) | Where-Object { $_ -ne $null }
 
     # Create a new list to store schemes
     $schemes = New-Object Collections.Generic.List[Object]
