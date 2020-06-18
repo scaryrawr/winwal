@@ -75,7 +75,7 @@ function Update-WalTerminal {
     }
 
     # Load existing profile
-    $configData = (Get-Content -Path $terminalProfile | ConvertFrom-Json)[0]
+    $configData = (Get-Content -Path $terminalProfile | ConvertFrom-Json) | Where-Object { $_ -ne $null }
 
     # Create a new list to store schemes
     $schemes = New-Object Collections.Generic.List[Object]
