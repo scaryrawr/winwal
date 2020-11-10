@@ -17,6 +17,12 @@ Use [`pip`](https://pypi.org/project/pip/) to install:
 - [colorz](https://github.com/metakirby5/colorz)
 - [haishoku](https://github.com/LanceGin/haishoku)
 
+For `wal` Backend, install [ImageMagick](https://imagemagick.org/) and add to path:
+
+```bat
+winget install ImageMagick
+```
+
 [PowerShell-Core](https://github.com/powershell/powershell/) `winget install -e Microsoft.PowerShell`
 
 Note: PowerShell versions less that 6 don't support JSON with comments

@@ -104,7 +104,7 @@ function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
         [string]$Image,
-        [ValidateSet('colorthief', 'colorz', 'haishoku')]$Backend = 'colorthief'
+        [ValidateSet('wal', 'colorthief', 'colorz', 'haishoku')]$Backend = 'colorthief'
     )
 
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
