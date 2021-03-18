@@ -135,7 +135,11 @@ function Update-WalTheme {
     }
 
     # Update Windows Terminal
-    Update-WalTerminal
+    if ($PSVersionTable.PSVersion.Major -gt 5) {
+        Update-WalTerminal
+    } else {
+        Write-Warning -Message 'Please use PowerShell-Core https://aka.ms/pscore6'
+    }
 
     # Update prompt defaults
     Update-WalCommandPrompt
