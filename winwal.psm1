@@ -67,6 +67,11 @@ function Update-WalCommandPrompt {
 }
 
 function Update-WalTerminal {
+    if ($PSVersionTable.PSVersion.Major -lt 6) {
+        Write-Warning -Message 'Please use PowerShell-Core https://aka.ms/pscore6'
+        return
+    }
+
     $terminalDir = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
     $terminalProfile = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
 
@@ -135,11 +140,7 @@ function Update-WalTheme {
     }
 
     # Update Windows Terminal
-    if ($PSVersionTable.PSVersion.Major -gt 5) {
-        Update-WalTerminal
-    } else {
-        Write-Warning -Message 'Please use PowerShell-Core https://aka.ms/pscore6'
-    }
+    Update-WalTerminal
 
     # Update prompt defaults
     Update-WalCommandPrompt
