@@ -77,9 +77,9 @@ function Update-WalTerminal {
         $terminalDir = "$_"
         $terminalProfile = "$terminalDir/settings.json"
 
+        # This version of windows terminal isn't installed
         if (!(Test-Path $terminalProfile)) {
-            # We'll probably fail out if we don't return early
-            continue
+            return
         }
 
         Copy-Item -Path $terminalProfile -Destination "$terminalDir/settings.json.bak"
