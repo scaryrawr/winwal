@@ -67,33 +67,41 @@ function Update-WalCommandPrompt {
 }
 
 function Update-WalTerminal {
-    $terminalDir = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
-    $terminalProfile = "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
+    @(
+        # Stable
+        "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState", 
 
-    if (!(Test-Path $terminalProfile)) {
-        # We'll probably fail out if we don't return early
-        return
+        # Preview
+        "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe/LocalState"
+    ) | ForEach-Object {
+        $terminalDir = "$_"
+        $terminalProfile = "$terminalDir/settings.json"
+
+        if (!(Test-Path $terminalProfile)) {
+            # We'll probably fail out if we don't return early
+            continue
+        }
+
+        Copy-Item -Path $terminalProfile -Destination "$terminalDir/settings.json.bak"
+
+        # Load existing profile
+        $configData = (Get-Content -Path $terminalProfile | ConvertFrom-Json) | Where-Object { $_ -ne $null }
+
+        # Create a new list to store schemes
+        $schemes = New-Object Collections.Generic.List[Object]
+
+        $configData.schemes | Where-Object { $_.name -ne "wal" } | ForEach-Object { $schemes.Add($_) }
+        $schemes.Add($(Get-Content "$HOME/.cache/wal/windows-terminal.json" | ConvertFrom-Json))
+
+        # Update color schemes
+        $configData.schemes = $schemes
+
+        # Set default theme as wal
+        $configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name colorScheme -Value 'wal' -Force
+
+        # Write config to disk
+        $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
     }
-
-    Copy-Item -Path $terminalProfile -Destination "$terminalDir/settings.json.bak"
-
-    # Load existing profile
-    $configData = (Get-Content -Path $terminalProfile | ConvertFrom-Json) | Where-Object { $_ -ne $null }
-
-    # Create a new list to store schemes
-    $schemes = New-Object Collections.Generic.List[Object]
-
-    $configData.schemes | Where-Object { $_.name -ne "wal" } | ForEach-Object { $schemes.Add($_) }
-    $schemes.Add($(Get-Content "$HOME/.cache/wal/windows-terminal.json" | ConvertFrom-Json))
-
-    # Update color schemes
-    $configData.schemes = $schemes
-
-    # Set default theme as wal
-    $configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name colorScheme -Value 'wal' -Force
-
-    # Write config to disk
-    $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
 }
 
 <#
