@@ -147,4 +147,8 @@ function Update-WalTheme {
 
     # Update prompt defaults
     Update-WalCommandPrompt
+
+    if ((Get-Module -ListAvailable -Name oh-my-posh).ExportedCommands.ContainsKey('Set-PoshPrompt')) {
+        Set-PoshPrompt -Theme "~/.cache/wal/posh-wal.json"
+    }
 }
