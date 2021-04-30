@@ -19,8 +19,8 @@ Use [`pip`](https://pypi.org/project/pip/) to install:
 
 For `wal` Backend, install [ImageMagick](https://imagemagick.org/) and add to path:
 
-```bat
-winget install ImageMagick
+```powershell
+choco install -y imagemagick
 ```
 
 [PowerShell-Core](https://github.com/powershell/powershell/) `winget install -e Microsoft.PowerShell`
@@ -28,11 +28,8 @@ winget install ImageMagick
 Note: PowerShell versions less that 6 don't support JSON with comments
 
 ```powershell
-winget install Python.Python
-pip install pywal
-pip install colorthief
-pip install colorz
-pip install haishoku
+winget install Python
+pip install pywal colorthief colorz haishoku
 ```
 
 ## Installing
@@ -85,3 +82,10 @@ There's also instructions in [pywal](https://github.com/dylanaraps/pywal) on set
 ## VS Code Plugins Used
 - [wal-theme](https://marketplace.visualstudio.com/items?itemName=dlasagno.wal-theme)
 - [GlassIt-VSC](https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit)
+
+## Recommended PowerShell Modules
+![Terminal](./assets/Terminal.png)
+
+- [Terminal-Icons](https://github.com/devblackops/Terminal-Icons) (requires using a [nerd font](https://www.nerdfonts.com/))
+- [oh-my-posh](https://ohmyposh.dev/)
+- [posh-git](https://github.com/dahlbyk/posh-git)

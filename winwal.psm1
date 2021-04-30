@@ -151,4 +151,9 @@ function Update-WalTheme {
     if ((Get-Module -ListAvailable -Name oh-my-posh).ExportedCommands.ContainsKey('Set-PoshPrompt')) {
         Set-PoshPrompt -Theme "~/.cache/wal/posh-wal.json"
     }
+
+    if (Get-Module -ListAvailable -Name Terminal-Icons) {
+        Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-theme.psd1"
+        Set-TerminalIconsTheme -ColorTheme wal
+    }
 }
