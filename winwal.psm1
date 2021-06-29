@@ -91,13 +91,17 @@ function Update-WalTerminal {
         $schemes = New-Object Collections.Generic.List[Object]
 
         $configData.schemes | Where-Object { $_.name -ne "wal" } | ForEach-Object { $schemes.Add($_) }
-        $schemes.Add($(Get-Content "$HOME/.cache/wal/windows-terminal.json" | ConvertFrom-Json))
+        $walTheme = $(Get-Content "$HOME/.cache/wal/windows-terminal.json" | ConvertFrom-Json)
+        $schemes.Add($walTheme)
 
         # Update color schemes
         $configData.schemes = $schemes
 
         # Set default theme as wal
         $configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name colorScheme -Value 'wal' -Force
+
+        # Set cursor to foreground color
+        $configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name cursorColor -Value $walTheme.foreground -Force
 
         # Write config to disk
         $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
