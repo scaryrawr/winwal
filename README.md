@@ -23,6 +23,12 @@ For `wal` Backend, install [ImageMagick](https://imagemagick.org/) and add to pa
 choco install -y imagemagick
 ```
 
+For [schemer2](https://github.com/thefryscorer/schemer2) backend, install [Go](https://golang.org/doc/install) and run:
+
+```powershell
+go get github.com/thefryscorer/schemer2
+```
+
 [PowerShell-Core](https://github.com/powershell/powershell/) `winget install -e Microsoft.PowerShell`
 
 Note: PowerShell versions less that 6 don't support JSON with comments
@@ -50,6 +56,11 @@ code $profile
 To update wal cache Windows Terminal Color Scheme using the current wallpaper:
 ```powershell
 Update-WalTheme
+```
+
+To use a different backend with the current wallpaper:
+```powershell
+Update-WalTheme -Backend haishoku
 ```
 
 To update wal cache, Windows Terminal Color Scheme, and set the desktop wallpaper:
