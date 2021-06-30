@@ -23,6 +23,8 @@ For `wal` Backend, install [ImageMagick](https://imagemagick.org/) and add to pa
 choco install -y imagemagick
 ```
 
+**Windows on ARM64** Please install the static version of ImageMagick from their [downloads](https://imagemagick.org/script/download.php#windows) to avoid issues.
+
 For [schemer2](https://github.com/thefryscorer/schemer2) backend, install [Go](https://golang.org/doc/install) and run:
 
 ```powershell
