@@ -28,7 +28,7 @@ choco install -y imagemagick
 For [schemer2](https://github.com/thefryscorer/schemer2) backend, install [Go](https://golang.org/doc/install) and run:
 
 ```powershell
-go get github.com/thefryscorer/schemer2
+go install github.com/thefryscorer/schemer2@latest
 ```
 
 [PowerShell-Core](https://github.com/powershell/powershell/) `winget install -e Microsoft.PowerShell`
