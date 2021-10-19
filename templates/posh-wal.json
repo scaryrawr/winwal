@@ -37,7 +37,10 @@
             "style": "powerline",
             "powerline_symbol": "\uE0B0",
             "foreground": "{color0}",
-            "background": "{color2}"
+            "background": "{color2}",
+            "properties": {{
+              "display_status": true
+            }}
           }},
           {{
             "type": "python",
