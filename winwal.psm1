@@ -152,10 +152,12 @@ function Update-WalTheme {
     # Update prompt defaults
     Update-WalCommandPrompt
 
-    if ((Get-Module -ListAvailable -Name oh-my-posh).ExportedCommands.ContainsKey('Set-PoshPrompt')) {
-        Set-PoshPrompt -Theme "~/.cache/wal/posh-wal.json"
+    # New oh-my-posh
+    if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path "${HOME}/.cache/wal/posh-wal.json")) {
+        oh-my-posh init pwsh --config "${HOME}/.cache/wal/posh-wal.json" | Invoke-Expression
     }
 
+    # Terminal Icons
     if (Get-Module -ListAvailable -Name Terminal-Icons) {
         Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-theme.psd1"
         Set-TerminalIconsTheme -ColorTheme wal
