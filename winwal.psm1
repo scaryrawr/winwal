@@ -157,10 +157,6 @@ function Update-WalTheme {
         oh-my-posh init pwsh --config "${HOME}/.cache/wal/posh-wal-agnoster.omp.json" | Invoke-Expression
     }
 
-    if (Get-Command pywalfox -ErrorAction SilentlyContinue) {
-        pywalfox update
-    }
-
     # Check if pywal fox needs to update
     if (Get-Command pywalfox -ErrorAction SilentlyContinue) {
         pywalfox update
