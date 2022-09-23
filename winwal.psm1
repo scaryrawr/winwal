@@ -153,8 +153,8 @@ function Update-WalTheme {
     Update-WalCommandPrompt
 
     # New oh-my-posh
-    if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path "${HOME}/.cache/wal/posh-wal.json")) {
-        oh-my-posh init pwsh --config "${HOME}/.cache/wal/posh-wal.json" | Invoke-Expression
+    if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path "${HOME}/.cache/wal/posh-wal-agnoster.omp.json")) {
+        oh-my-posh init pwsh --config "${HOME}/.cache/wal/posh-wal-agnoster.omp.json" | Invoke-Expression
     }
 
     # Check if pywal fox needs to update
@@ -164,7 +164,7 @@ function Update-WalTheme {
 
     # Terminal Icons
     if (Get-Module -ListAvailable -Name Terminal-Icons) {
-        Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-theme.psd1"
+        Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-icons.psd1"
         Set-TerminalIconsTheme -ColorTheme wal
     }
 }
