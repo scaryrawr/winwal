@@ -161,6 +161,11 @@ function Update-WalTheme {
         pywalfox update
     }
 
+    # Check if pywal fox needs to update
+    if (Get-Command pywalfox -ErrorAction SilentlyContinue) {
+        pywalfox update
+    }
+
     # Terminal Icons
     if (Get-Module -ListAvailable -Name Terminal-Icons) {
         Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-icons.psd1"
