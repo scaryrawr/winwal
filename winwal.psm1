@@ -157,6 +157,11 @@ function Update-WalTheme {
         oh-my-posh init pwsh --config "${HOME}/.cache/wal/posh-wal.json" | Invoke-Expression
     }
 
+    # Check if pywal fox needs to update
+    if (Get-Command pywalfox -ErrorAction SilentlyContinue) {
+        pywalfox update
+    }
+
     # Terminal Icons
     if (Get-Module -ListAvailable -Name Terminal-Icons) {
         Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-theme.psd1"
