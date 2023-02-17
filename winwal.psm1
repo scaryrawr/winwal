@@ -44,7 +44,9 @@ function Add-WalTemplates {
     }
 
     Get-ChildItem -Path $sourceDir | ForEach-Object {
-        Copy-Item -Path $_.FullName -Destination "$HOME/.config/wal/templates"
+        if (!(Test-Path -Path "$HOME/.config/wal/templates/$($_.Name)")) {
+            Copy-Item -Path $_.FullName -Destination "$HOME/.config/wal/templates"
+        }
     }
 }
 
@@ -61,12 +63,20 @@ function Update-WalCommandPrompt {
         Expand-Archive -Path $colorToolZip -DestinationPath $colorToolDir
         Remove-Item -Path $colorToolZip
     }
-
-    Copy-Item -Path "$HOME/.cache/wal/wal-prompt.ini" -Destination "$schemesDir/wal.ini"
-    & $colorTool -b wal.ini
+    
+    # Make sure it was created
+    $walprompt = "$HOME/.cache/wal/wal-prompt.ini"
+    if (Test-Path -Path $walprompt) {
+        Copy-Item -Path $walprompt -Destination "$schemesDir/wal.ini"
+        & $colorTool -b wal.ini
+    }
 }
 
 function Update-WalTerminal {
+    if (!(Test-Path -Path "$HOME/.cache/wal/windows-terminal.json")) {
+        return
+    }
+
     @(
         # Stable
         "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState", 
@@ -78,7 +88,7 @@ function Update-WalTerminal {
         $terminalProfile = "$terminalDir/settings.json"
 
         # This version of windows terminal isn't installed
-        if (!(Test-Path $terminalProfile)) {
+        if (!(Test-Path -Path $terminalProfile)) {
             return
         }
 
@@ -108,6 +118,28 @@ function Update-WalTerminal {
     }
 }
 
+Class AvailableBackends : System.Management.Automation.IValidateSetValuesGenerator {
+    [string[]] GetValidValues() {
+        $backends = @()
+        foreach ($backend in @('magick', 'schemer2')) {
+            if (Get-Command $backend -ErrorAction SilentlyContinue) {
+                $backends += if ($backend -eq 'magick') { 'wal' } else { $backend }
+            }
+        }
+
+        if (Get-Command 'python' -ErrorAction SilentlyContinue) {
+            foreach ($backend in @('colorthief', 'colorz', 'haishoku')) {
+                python -c "import $backend"
+                if ($?) {
+                    $backends += $backend
+                }
+            }
+        }
+
+        return $backends
+    }
+}
+
 <#
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
@@ -116,7 +148,7 @@ function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
         [string]$Image,
-        [ValidateSet('wal', 'colorthief', 'colorz', 'haishoku', 'schemer2')]$Backend = 'colorthief'
+        [ValidateSet([AvailableBackends])]$Backend = 'colorthief'
     )
 
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
@@ -132,13 +164,19 @@ function Update-WalTheme {
     # Use temp location, default backgrounds are in a write protected directory
     Copy-Item -Path $img -Destination $tempImg
 
-    # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
-    $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
-    if ($light -gt 0) {
-        wal -n -e -l -s -t -i $tempImg --backend $Backend
+    if (Get-Command 'wal.exe' -ErrorAction SilentlyContinue) {
+        # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
+        $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
+        if ($light -gt 0) {
+            wal -n -e -l -s -t -i $tempImg --backend $Backend
+        }
+        else {
+            wal -n -e -s -t -i $tempImg --backend $Backend
+        }
     }
     else {
-        wal -n -e -s -t -i $tempImg --backend $Backend
+        Write-Error "Pywal not found, please install python and pywal and add it to your PATH`n`twinget install Python.Python.3.11`n`tpip install pywal"
+        return
     }
 
     # Set the wallpaper
@@ -153,8 +191,8 @@ function Update-WalTheme {
     Update-WalCommandPrompt
 
     # New oh-my-posh
-    if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path "${HOME}/.cache/wal/posh-wal-agnoster.omp.json")) {
-        oh-my-posh init pwsh --config "${HOME}/.cache/wal/posh-wal-agnoster.omp.json" | Invoke-Expression
+    if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path -Path "$HOME/.cache/wal/posh-wal-agnoster.omp.json")) {
+        oh-my-posh init pwsh --config "$HOME/.cache/wal/posh-wal-agnoster.omp.json" | Invoke-Expression
     }
 
     # Check if pywal fox needs to update
@@ -163,8 +201,8 @@ function Update-WalTheme {
     }
 
     # Terminal Icons
-    if (Get-Module -ListAvailable -Name Terminal-Icons) {
-        Add-TerminalIconsColorTheme -Path "~/.cache/wal/wal-icons.psd1"
+    if ((Get-Module -ListAvailable -Name Terminal-Icons) -and (Test-Path -Path "$HOME/.cache/wal/wal-icons.psd1")) {
+        Add-TerminalIconsColorTheme -Path "$HOME/.cache/wal/wal-icons.psd1"
         Set-TerminalIconsTheme -ColorTheme wal
     }
 }
