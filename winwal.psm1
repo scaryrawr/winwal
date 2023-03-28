@@ -128,12 +128,7 @@ Class AvailableBackends : System.Management.Automation.IValidateSetValuesGenerat
         }
 
         if (Get-Command 'python' -ErrorAction SilentlyContinue) {
-            foreach ($backend in @('colorthief', 'colorz', 'haishoku')) {
-                python -c "import $backend"
-                if ($?) {
-                    $backends += $backend
-                }
-            }
+            $backends = ConvertTo-Json -InputObject @('colorthief', 'colorz', 'haishoku') | python "$(Get-ScriptDirectory)/checker.py" | ConvertFrom-Json
         }
 
         return $backends
