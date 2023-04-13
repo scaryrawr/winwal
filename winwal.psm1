@@ -121,14 +121,14 @@ function Update-WalTerminal {
 Class AvailableBackends : System.Management.Automation.IValidateSetValuesGenerator {
     [string[]] GetValidValues() {
         $backends = @()
+        if (Get-Command 'python' -ErrorAction SilentlyContinue) {
+            $backends = ConvertTo-Json -InputObject @('colorthief', 'colorz', 'haishoku') | python "$(Get-ScriptDirectory)/checker.py" | ConvertFrom-Json
+        }
+
         foreach ($backend in @('magick', 'schemer2')) {
             if (Get-Command $backend -ErrorAction SilentlyContinue) {
                 $backends += if ($backend -eq 'magick') { 'wal' } else { $backend }
             }
-        }
-
-        if (Get-Command 'python' -ErrorAction SilentlyContinue) {
-            $backends = ConvertTo-Json -InputObject @('colorthief', 'colorz', 'haishoku') | python "$(Get-ScriptDirectory)/checker.py" | ConvertFrom-Json
         }
 
         return $backends
