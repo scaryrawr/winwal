@@ -101,4 +101,3 @@ There's also instructions in [pywal](https://github.com/dylanaraps/pywal) on set
 
 - [Terminal-Icons](https://github.com/devblackops/Terminal-Icons) (requires using a [nerd font](https://www.nerdfonts.com/))
 - [oh-my-posh](https://ohmyposh.dev/)
-- [posh-git](https://github.com/dahlbyk/posh-git)
