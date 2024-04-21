@@ -1,0 +1,277 @@
+{{
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "blocks": [
+      {{
+        "alignment": "left",
+        "segments": [
+          {{
+            "background": "{color4}",
+            "foreground": "{color7}",
+            "leading_diamond": "\u256d\u2500\ue0b6",
+            "style": "diamond",
+            "template": "\uf120 {{{{ .Name }}}} ",
+            "type": "shell"
+          }},
+          {{
+            "background": "{color1}",
+            "foreground": "{color3}",
+            "style": "diamond",
+            "template": "<parentBackground>\ue0b0</> \uf292 ",
+            "type": "root"
+          }},
+          {{
+            "background": "{color9}",
+            "foreground": "{color0}",
+            "powerline_symbol": "\ue0b0",
+            "properties": {{
+              "folder_icon": " \uf07b ",
+              "home_icon": "\ue617",
+              "style": "folder"
+            }},
+            "style": "powerline",
+            "template": " \uf07b\uea9c {{{{ .Path }}}} ",
+            "type": "path"
+          }},
+          {{
+            "background": "{color3}",
+            "background_templates": [
+              "{{{{ if or (.Working.Changed) (.Staging.Changed) }}}}{color3}{{{{ end }}}}",
+              "{{{{ if and (gt .Ahead 0) (gt .Behind 0) }}}}{color10}{{{{ end }}}}",
+              "{{{{ if gt .Ahead 0 }}}}{color13}{{{{ end }}}}",
+              "{{{{ if gt .Behind 0 }}}}{color13}{{{{ end }}}}"
+            ],
+            "foreground": "{color0}",
+            "powerline_symbol": "\ue0b0",
+            "properties": {{
+              "branch_icon": "\ue725 ",
+              "fetch_status": true,
+              "fetch_upstream_icon": true
+            }},
+            "style": "powerline",
+            "template": " {{{{ .UpstreamIcon }}}}{{{{ .HEAD }}}}{{{{if .BranchStatus }}}} {{{{ .BranchStatus }}}}{{{{ end }}}}{{{{ if .Working.Changed }}}} \uf044 {{{{ .Working.String }}}}{{{{ end }}}}{{{{ if and (.Working.Changed) (.Staging.Changed) }}}} |{{{{ end }}}}{{{{ if .Staging.Changed }}}}<{color1}> \uf046 {{{{ .Staging.String }}}}</>{{{{ end }}}} ",
+            "type": "git"
+          }},
+          {{
+            "background": "{color8}",
+            "foreground": "{color7}",
+            "properties": {{
+              "style": "roundrock",
+              "threshold": 0
+            }},
+            "style": "diamond",
+            "template": " \ueba2 {{{{ .FormattedMs }}}}\u2800",
+            "trailing_diamond": "\ue0b4",
+            "type": "executiontime"
+          }}
+        ],
+        "type": "prompt"
+      }},
+      {{
+        "alignment": "right",
+        "segments": [
+          {{
+            "background": "{color0}",
+            "foreground": "{color2}",
+            "leading_diamond": "\ue0b6",
+            "properties": {{
+              "fetch_package_manager": true,
+              "npm_icon": " <{color1}>\ue5fa</> ",
+              "yarn_icon": " <{color4}>\ue6a7</>"
+            }},
+            "style": "diamond",
+            "template": "\ue718 {{{{ if .PackageManagerIcon }}}}{{{{ .PackageManagerIcon }}}} {{{{ end }}}}{{{{ .Full }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "node"
+          }},
+          {{
+            "background": "{color12}",
+            "foreground": "{color11}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue235 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ if .Venv }}}}{{{{ .Venv }}}} {{{{ end }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "python"
+          }},
+          {{
+            "background": "{color4}",
+            "foreground": "{color7}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue738 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "java"
+          }},
+          {{
+            "background": "{color0}",
+            "foreground": "{color4}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue77f {{{{ if .Unsupported }}}}\uf071{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "dotnet"
+          }},
+          {{
+            "background": "{color7}",
+            "foreground": "{color6}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue626 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "go"
+          }},
+          {{
+            "background": "{color15}",
+            "foreground": "{color3}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue7a8 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "rust"
+          }},
+          {{
+            "background": "{color15}",
+            "foreground": "{color4}",
+            "leading_diamond": " \ue0b6",
+            "style": "diamond",
+            "template": "\ue798 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "dart"
+          }},
+          {{
+            "background": "{color7}",
+            "foreground": "{color1}",
+            "leading_diamond": " \ue0b6",
+            "style": "diamond",
+            "template": "\ue753 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "angular"
+          }},
+          {{
+            "background": "{color8}",
+            "foreground": "{color7}",
+            "leading_diamond": " \ue0b6",
+            "style": "diamond",
+            "template": "{{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}Nx {{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "nx"
+          }},
+          {{
+            "background": "{color13}",
+            "foreground": "{color10}",
+            "leading_diamond": " \ue0b6",
+            "style": "diamond",
+            "template": "<{color1}>\ue624</> {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "julia"
+          }},
+          {{
+            "background": "{color7}",
+            "foreground": "{color1}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue791 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "ruby"
+          }},
+          {{
+            "background": "{color7}",
+            "foreground": "{color14}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\uf104<{color9}>\uf0e7</>\uf105 {{{{ if .Error }}}}{{{{ .Error }}}}{{{{ else }}}}{{{{ .Full }}}}{{{{ end }}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "azfunc"
+          }},
+          {{
+            "background": "{color8}",
+            "foreground": "{color9}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\ue7ad {{{{.Profile}}}}{{{{if .Region}}}}@{{{{.Region}}}}{{{{end}}}}",
+            "trailing_diamond": "\ue0b4 ",
+            "type": "aws"
+          }},
+          {{
+            "background": "{color4}}}",
+            "foreground": "{color7}",
+            "leading_diamond": "\ue0b6",
+            "style": "diamond",
+            "template": "\uf308 {{{{.Context}}}}{{{{if .Namespace}}}} :: {{{{.Namespace}}}}{{{{end}}}}",
+            "trailing_diamond": "\ue0b4",
+            "type": "kubectl"
+          }},
+          {{
+            "background": "{color8}",
+            "foreground": "{color0}",
+            "leading_diamond": "\ue0b6",
+            "trailing_diamond": "<transparent,background>\ue0b2</>",
+            "properties": {{
+              "linux": "\ue712",
+              "macos": "\ue711",
+              "windows": "\ue70f"
+            }},
+            "style": "diamond",
+            "template": " {{{{ if .WSL }}}}WSL at {{{{ end }}}}{{{{.Icon}}}} ",
+            "type": "os"
+          }},
+          {{
+            "background": "{color9}",
+            "background_templates": [
+              "{{{{if eq \"Charging\" .State.String}}}}{color10}{{{{end}}}}",
+              "{{{{if eq \"Discharging\" .State.String}}}}{color3}}}{{{{end}}}}",
+              "{{{{if eq \"Full\" .State.String}}}}{color2}{{{{end}}}}"
+            ],
+            "foreground": "{color8}",
+            "invert_powerline": true,
+            "powerline_symbol": "\ue0b2",
+            "properties": {{
+              "charged_icon": "\uf240 ",
+              "charging_icon": "\uf1e6 ",
+              "discharging_icon": "\ue234 "
+            }},
+            "style": "powerline",
+            "template": " {{{{ if not .Error }}}}{{{{ .Icon }}}}{{{{ .Percentage }}}}{{{{ end }}}}{{{{ .Error }}}}\uf295 ",
+            "type": "battery"
+          }},
+          {{
+            "background": "{color14}",
+            "foreground": "{color7}",
+            "invert_powerline": true,
+            "leading_diamond": "\ue0b2",
+            "properties": {{
+              "time_format": "_2,15:04"
+            }},
+            "style": "diamond",
+            "template": " \uf073 {{{{ .CurrentDate | date .Format }}}} ",
+            "trailing_diamond": "\ue0b4",
+            "type": "time"
+          }}
+        ],
+        "type": "prompt"
+      }},
+      {{
+        "alignment": "left",
+        "newline": true,
+        "segments": [
+          {{
+            "foreground": "{color14}",
+            "style": "plain",
+            "template": "\u2570\u2500",
+            "type": "text"
+          }},
+          {{
+            "foreground": "{color15}",
+            "foreground_templates": ["{{{{ if gt .Code 0 }}}}{color1}{{{{ end }}}}"],
+            "properties": {{
+              "always_enabled": true
+            }},
+            "style": "plain",
+            "template": "\ue285\ueab6 ",
+            "type": "status"
+          }}
+        ],
+        "type": "prompt"
+      }}
+    ],
+    "version": 2
+  }}

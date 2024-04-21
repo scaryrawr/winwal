@@ -1,0 +1,57 @@
+{{
+    "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+    "blocks": [
+      {{
+        "type": "rprompt",
+        "segments": [
+          {{
+            "foreground": "{color4}",
+            "properties": {{
+              "time_format": "15:04:05"
+            }},
+            "style": "plain",
+            "template": " {{{{ .CurrentDate | date .Format }}}} ",
+            "type": "time"
+          }}
+        ]
+      }},
+      {{
+        "alignment": "left",
+        "segments": [
+          {{
+            "background": "{color7}",
+            "foreground": "{color0}",
+            "powerline_symbol": "\ue0b0",
+            "style": "powerline",
+            "template": " {{{{ .UserName }}}}@{{{{ .HostName }}}} ",
+            "type": "session"
+          }},
+          {{
+            "background": "{color14}",
+            "foreground": "{color0}",
+            "powerline_symbol": "\ue0b0",
+            "properties": {{
+              "folder_icon": "\uf115",
+              "folder_separator_icon": " \ue0b1 ",
+              "home_icon": "\ueb06",
+              "style": "agnoster"
+            }},
+            "style": "powerline",
+            "template": " {{{{ .Path }}}} ",
+            "type": "path"
+          }},
+          {{
+            "background": "{color10}",
+            "foreground": "{color6}",
+            "powerline_symbol": "\ue0b0",
+            "style": "powerline",
+            "template": " {{{{ .HEAD }}}} ",
+            "type": "git"
+          }}
+        ],
+        "type": "prompt"
+      }}
+    ],
+    "final_space": true,
+    "version": 2
+  }}
