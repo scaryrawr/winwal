@@ -35,12 +35,28 @@ function Get-ScriptDirectory {
 
 <#
 .DESCRIPTION
+    Sets up the virtual python environment for the module.
+#>
+function Set-VirtualEnvironment {
+    & "$(Get-ScriptDirectory)/ConfigureVirtualEnvironment.ps1"
+}
+
+<#
+.DESCRIPTION
+    Deactivates the virtual python environment for the module.
+#>
+function Reset-VirtualEnvironment {
+    & deactivate
+}
+
+<#
+.DESCRIPTION
     Copies the contents of ./templates to ~/.config/wal/templates, will clobber templates with matching names
 #>
 function Add-WalTemplates {
     $sourceDir = "$(Get-ScriptDirectory)/templates"
     if (!(Test-Path -Path "$HOME/.config/wal/templates")) {
-        New-Item -Path "$HOME/.config/wal/templates" -ItemType Directory -ErrorAction SilentlyContinue
+        New-Item -Path "$HOME/.config/wal/templates" -ItemType Directory
     }
 
     Get-ChildItem -Path $sourceDir | ForEach-Object {
@@ -120,12 +136,14 @@ function Update-WalTerminal {
 
 Class AvailableBackends : System.Management.Automation.IValidateSetValuesGenerator {
     [string[]] GetValidValues() {
-        $backends = @()
-        if (Get-Command 'python' -ErrorAction SilentlyContinue) {
-            $backends = ConvertTo-Json -InputObject @('colorthief', 'colorz', 'haishoku') | python "$(Get-ScriptDirectory)/checker.py" | ConvertFrom-Json
+        Set-VirtualEnvironment
+        try {
+            return ConvertTo-Json -InputObject @('colorthief', 'colorz', 'haishoku') | python "$(Get-ScriptDirectory)/checker.py" | ConvertFrom-Json
         }
-
-        return $backends
+        finally {
+            # Deactivate the virtual environment
+            Reset-VirtualEnvironment
+        }
     }
 }
 
@@ -153,7 +171,8 @@ function Update-WalTheme {
     # Use temp location, default backgrounds are in a write protected directory
     Copy-Item -Path $img -Destination $tempImg
 
-    if (Get-Command 'wal.exe' -ErrorAction SilentlyContinue) {
+    Set-VirtualEnvironment
+    try {
         # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
         $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
         if ($light -gt 0) {
@@ -163,9 +182,8 @@ function Update-WalTheme {
             wal -n -e -s -t -i $tempImg --backend $Backend
         }
     }
-    else {
-        Write-Error "Pywal not found, please install python and pywal and add it to your PATH`n`twinget install Python.Python.3.11`n`tpip install pywal"
-        return
+    finally {
+        Reset-VirtualEnvironment  
     }
 
     # Set the wallpaper
@@ -195,3 +213,5 @@ function Update-WalTheme {
         Set-TerminalIconsTheme -ColorTheme wal
     }
 }
+
+Export-ModuleMember -Function Set-Wallpaper, Update-WalCommandPrompt, Update-WalTerminal, Update-WalTheme
