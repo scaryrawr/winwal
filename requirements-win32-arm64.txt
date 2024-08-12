@@ -1,0 +1,4 @@
+colorthief==0.2.1
+haishoku==1.1.8
+pillow==10.4.0
+pywal==3.3.0

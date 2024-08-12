@@ -15,4 +15,9 @@ $scriptDir = $IsWindows ? "$envDir/Scripts/" : "$envDir/bin/"
 & "$scriptDir/Activate.ps1"
 
 # Install requirements, redirecting stderr to stdout to ignore already installed packages
-pip install -r "$sourceDir/requirements.txt" 2>&1 | Out-Null
+if ($IsWindows -and ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64')) {
+    pip install -r "$sourceDir/requirements-win32-arm64.txt" 2>&1 | Out-Null
+}
+else {
+    pip install -r "$sourceDir/requirements.txt" 2>&1 | Out-Null
+}
