@@ -43,14 +43,6 @@ function Set-VirtualEnvironment {
 
 <#
 .DESCRIPTION
-    Deactivates the virtual python environment for the module.
-#>
-function Reset-VirtualEnvironment {
-    & deactivate
-}
-
-<#
-.DESCRIPTION
     Copies the contents of ./templates to ~/.config/wal/templates, will clobber templates with matching names
 #>
 function Add-WalTemplates {
@@ -142,7 +134,7 @@ Class AvailableBackends : System.Management.Automation.IValidateSetValuesGenerat
         }
         finally {
             # Deactivate the virtual environment
-            Reset-VirtualEnvironment
+            deactivate
         }
     }
 }
@@ -155,7 +147,9 @@ function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
         [string]$Image,
-        [ValidateSet([AvailableBackends])]$Backend = 'colorthief'
+        [ValidateSet([AvailableBackends])]$Backend = 'colorthief',
+        [ValidateSet('light', 'dark')]$Theme = $null,
+        [Nullable[double]][ValidateRange(0.0, 1.0)]$Saturate = $null
     )
 
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
@@ -173,17 +167,14 @@ function Update-WalTheme {
 
     Set-VirtualEnvironment
     try {
-        # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
-        $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
-        if ($light -gt 0) {
-            wal -n -e -l -s -t -i $tempImg --backend $Backend
-        }
-        else {
-            wal -n -e -s -t -i $tempImg --backend $Backend
-        }
+        # Detect if user wants light mode or if system is in light mode
+        $light = ($Theme -eq 'light') -or (($Theme -ne 'dark') -and ($(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme -gt 0))
+
+        # Invoke wal with selected backend and don't set the wallpaper (wal will fail)
+        wal -n -e ($light ? '-l' : $null) -s -t -i $tempImg --backend $Backend (($null -ne $Saturate) ? "--saturate $($Saturate.ToString('#.######'))" : $null)
     }
     finally {
-        Reset-VirtualEnvironment  
+        deactivate
     }
 
     # Set the wallpaper
@@ -214,4 +205,4 @@ function Update-WalTheme {
     }
 }
 
-Export-ModuleMember -Function Set-Wallpaper, Update-WalCommandPrompt, Update-WalTerminal, Update-WalTheme
+Export-ModuleMember -Function Update-WalTheme, Set-Wallpaper
