@@ -4,12 +4,15 @@ if (!(Get-Command 'python' -ErrorAction SilentlyContinue)) {
 
 # Create virtual environment if it doesn't exist
 $sourceDir = Split-Path $script:MyInvocation.MyCommand.Path
-if (!(Test-Path -Path $sourceDir)) {
-    python -m venv $sourceDir   
+$envDir = "$sourceDir/venv"
+if (!(Test-Path -Path $envDir)) {
+    python -m venv $envDir   
 }
 
+$scriptDir = $IsWindows ? "$envDir/Scripts/" : "$envDir/bin/"
+
 # Activate the virtual environment
-Invoke-Expression "$sourceDir/venv/bin/Activate.ps1"
+& "$scriptDir/Activate.ps1"
 
 # Install requirements, redirecting stderr to stdout to ignore already installed packages
 pip install -r "$sourceDir/requirements.txt" 2>&1 | Out-Null
