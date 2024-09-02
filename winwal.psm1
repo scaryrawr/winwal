@@ -52,9 +52,7 @@ function Add-WalTemplates {
     }
 
     Get-ChildItem -Path $sourceDir | ForEach-Object {
-        if (!(Test-Path -Path "$HOME/.config/wal/templates/$($_.Name)")) {
-            Copy-Item -Path $_.FullName -Destination "$HOME/.config/wal/templates"
-        }
+        Copy-Item -Path $_.FullName -Destination "$HOME/.config/wal/templates"
     }
 }
 
@@ -118,9 +116,6 @@ function Update-WalTerminal {
         # Set default theme as wal
         $configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name colorScheme -Value 'wal' -Force
 
-        # Set cursor to foreground color
-        $configData.profiles.defaults | Add-Member -MemberType NoteProperty -Name cursorColor -Value $walTheme.foreground -Force
-
         # Write config to disk
         $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
     }
@@ -148,8 +143,8 @@ function Update-WalTheme {
         # Path to image to set as background, if not set current wallpaper is used
         [string]$Image,
         [ValidateSet([AvailableBackends])]$Backend = 'colorthief',
-        [ValidateSet('light', 'dark')]$Theme = $null,
-        [Nullable[double]][ValidateRange(0.0, 1.0)]$Saturate = $null
+        [ValidateSet('light', 'dark')]$Theme = $null
+        # [Nullable[double]][ValidateRange(0.0, 1.0)]$Saturate = $null
     )
 
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
@@ -171,7 +166,7 @@ function Update-WalTheme {
         $light = ($Theme -eq 'light') -or (($Theme -ne 'dark') -and ($(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme -gt 0))
 
         # Invoke wal with selected backend and don't set the wallpaper (wal will fail)
-        wal -n -e ($light ? '-l' : $null) -s -t -i $tempImg --backend $Backend (($null -ne $Saturate) ? "--saturate $($Saturate.ToString('#.######'))" : $null)
+        wal -n -e ($light ? '-l' : $null) -s -t -i $tempImg --backend $Backend #(($null -ne $Saturate) ? "--saturate $($Saturate.ToString('#.######'))" : $null)
     }
     finally {
         deactivate
