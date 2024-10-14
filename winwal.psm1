@@ -82,7 +82,13 @@ function Update-WalTerminal {
         "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState", 
 
         # Preview
-        "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe/LocalState"
+        "$HOME/AppData/Local/Packages/Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe/LocalState",
+
+        # Stable - Scoop
+        "$HOME/scoop/persist/windows-terminal/settings",
+
+        # Preview - Scoop
+        "$HOME/scoop/persist/windows-terminal-preview/settings"
     ) | ForEach-Object {
         $terminalDir = "$_"
         $terminalProfile = "$terminalDir/settings.json"
@@ -118,17 +124,6 @@ function Update-WalTerminal {
     }
 }
 
-Class AvailableBackends : System.Management.Automation.IValidateSetValuesGenerator {
-    [string[]] GetValidValues() {
-        $backends = @()
-        if (Get-Command 'python' -ErrorAction SilentlyContinue) {
-            $backends = ConvertTo-Json -InputObject @('colorthief', 'colorz', 'haishoku') | python "$(Get-ScriptDirectory)/checker.py" | ConvertFrom-Json
-        }
-
-        return $backends
-    }
-}
-
 <#
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
@@ -137,7 +132,7 @@ function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
         [string]$Image,
-        [ValidateSet([AvailableBackends])]$Backend = 'colorthief'
+        [string]$Backend = 'wal'
     )
 
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
@@ -154,7 +149,7 @@ function Update-WalTheme {
     Copy-Item -Path $img -Destination $tempImg
 
     if (Get-Command 'wal.exe' -ErrorAction SilentlyContinue) {
-        # Invoke wal with colorthief backend and don't set the wallpaper (wal will fail)
+        # Invoke wal and don't set the wallpaper (wal will fail)
         $light = $(Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
         if ($light -gt 0) {
             wal -n -e -l -s -t -i $tempImg --backend $Backend
@@ -165,6 +160,11 @@ function Update-WalTheme {
     }
     else {
         Write-Error "Pywal not found, please install python and pywal and add it to your PATH`n`twinget install Python.Python.3.11`n`tpip install pywal"
+        return
+    }
+
+    # Return if wal failed
+    if ($LastExitCode -ne 0) {
         return
     }
 
