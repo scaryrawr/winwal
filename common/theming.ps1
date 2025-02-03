@@ -1,9 +1,20 @@
 function Get-CurrentTheme {
-  $os = $IsWindows ? 'Windows' : ($IsLinux ? 'Linux' : 'MacOS')
+  if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
+    $os = 'Windows'
+  } elseif ($IsLinux) {
+    $os = 'Linux'
+  } else {
+    $os = 'MacOS'
+  }
 
   switch ($os) {
     'Windows' {
-      return (Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme -gt 0 ? 'Light' : 'Dark'
+      $themeValue = (Get-ItemProperty -Path 'HKCU:/SOFTWARE/Microsoft/Windows/CurrentVersion/Themes/Personalize' -Name AppsUseLightTheme).AppsUseLightTheme
+      if ($themeValue -gt 0) {
+        return 'Light'
+      } else {
+        return 'Dark'
+      }
     }
     'Linux' {
       $gtkTheme = & gsettings get org.gnome.desktop.interface gtk-theme 2>$null
