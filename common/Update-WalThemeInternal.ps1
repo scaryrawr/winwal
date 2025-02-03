@@ -1,11 +1,7 @@
-. $PSScriptRoot/theming.ps1
-
 <#
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
 #>
-. $PSScriptRoot/theming.ps1
-
 function Update-WalThemeInternal {
   param(
     # Path to image to set as background, if not set current wallpaper is used
@@ -19,25 +15,29 @@ function Update-WalThemeInternal {
     $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
   }
 
+  . $PSScriptRoot/templates.ps1
   # Add our templates to wal configuration
   Add-WalTemplates
 
   $tempImg = "$env:TEMP/$(Split-Path $img -leaf)"
 
   # Use temp location, default backgrounds are in a write protected directory
-  Copy-Item -Path $img -Destination $tempImg
+  if (-not (Test-Path -Path $tempImg)) {
+    Copy-Item -Path $img -Destination $tempImg
+  }
 
   if (Get-Command 'wal' -ErrorAction SilentlyContinue) {
+    . $PSScriptRoot/theming.ps1
     # Retrieve current theme using the new function
     $currentTheme = Get-CurrentTheme
 
     # Construct wal arguments
     $walArgs = @('-e', '-s', '-t', '-i', $tempImg, '--backend', $Backend)
     if ($img) {
-      $walArgs += '-l'
+      $walArgs += '-n'
     }
     if ($currentTheme -eq 'Light') {
-      $walArgs += '-n'
+      $walArgs += '-l'
     }
 
     # Invoke wal with constructed arguments
@@ -78,3 +78,5 @@ function Update-WalThemeInternal {
     Set-TerminalIconsTheme -ColorTheme wal
   }
 }
+
+Export-ModuleMember -Function Update-WalThemeInternal

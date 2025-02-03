@@ -20,6 +20,7 @@ function Update-WalTheme {
     [ValidateSet([AvailableBackends])]$Backend = 'wal'
   )
 
+  . $PSScriptRoot/../common/Update-WalThemeInternal.ps1
   Update-WalThemeInternal -Image $Image -Backend $Backend
 }
 

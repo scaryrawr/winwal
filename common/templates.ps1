@@ -3,7 +3,7 @@
     Copies the contents of ./templates to ~/.config/wal/templates, will clobber templates with matching names
 #>
 function Add-WalTemplates {
-  $sourceDir = "$PSScriptRoot/templates"
+  $sourceDir = "$PSScriptRoot/../templates"
   if (!(Test-Path -Path "$HOME/.config/wal/templates")) {
     New-Item -Path "$HOME/.config/wal/templates" -ItemType Directory -ErrorAction SilentlyContinue
   }
