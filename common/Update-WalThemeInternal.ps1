@@ -1,3 +1,5 @@
+. $PSScriptRoot/theming.ps1
+
 <#
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image

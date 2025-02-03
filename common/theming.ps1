@@ -28,3 +28,5 @@ function Get-CurrentTheme {
     }
   }
 }
+
+Export-ModuleMember -Function Get-CurrentTheme

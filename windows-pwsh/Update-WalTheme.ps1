@@ -11,3 +11,5 @@ function Update-WalTheme {
 
   Update-WalThemeInternal -Image $Image -Backend $Backend
 }
+
+Export-ModuleMember -Function Update-WalTheme

@@ -71,3 +71,5 @@ function Update-WalTerminal {
     $configData | ConvertTo-Json -Depth 32 | Set-Content -Path $terminalProfile
   }
 }
+
+Export-ModuleMember -Function Update-WalCommandPrompt, Update-WalTerminal
