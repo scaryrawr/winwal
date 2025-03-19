@@ -1,7 +1,1 @@
-colorthief==0.2.1
-colorz==1.0.3
-haishoku==1.1.8
-numpy==2.0.1
-pillow==10.4.0
-pywal==3.3.0
-scipy==1.14.0
+pywal16[all]
