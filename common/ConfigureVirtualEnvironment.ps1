@@ -16,7 +16,13 @@ if (!(Test-Path -Path $envDir)) {
     & $pythonCmd -m venv $envDir   
 }
 
-$scriptDir = $IsWindows ? "$envDir/Scripts/" : "$envDir/bin/"
+$scriptDir = $null
+if ($IsWindows -or $PSVersionTable.PSEdition -eq 'Desktop') {
+    $scriptDir = "$envDir/Scripts/"
+}
+else {
+    $scriptDir = "$envDir/bin/"
+}
 
 # Activate the virtual environment
 & "$scriptDir/Activate.ps1"
