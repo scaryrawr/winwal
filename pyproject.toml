@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "winwal"
+version = "0.1.0"
+description = "A wrapper around pywal/pywal16 for Windows"
+readme = "README.md"
+requires-python = ">=3.6"
+license = { file = "LICENSE" }

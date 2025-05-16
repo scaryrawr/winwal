@@ -11,7 +11,9 @@ Only 1 backend is needed to get started, but each backend will provide slightly 
 
 pywal supports more backends, but I have not tried figuring them all out on Windows yet.
 
-Use [`pip`](https://pypi.org/project/pip/) to install:
+winwal now uses [uv](https://github.com/astral-sh/uv), an extremely fast Python package manager, for managing dependencies. The environment setup happens automatically when running the module.
+
+You can use [`pip`](https://pypi.org/project/pip/) or [`uv`](https://github.com/astral-sh/uv) to install the required packages:
 
 - [pywal16](https://github.com/eylles/pywal16)
 - [colorthief](https://github.com/fengsp/color-thief-py)
@@ -43,17 +45,38 @@ pip install pywal colorthief colorz haishoku
 
 ## Installing
 
-Clone the repository and update your powershell profile to have:
+1. Clone the repository:
 
-```powershell
-Import-Module .\path\to\winwal.psm1
-```
+   ```powershell
+   git clone https://github.com/ScaryRawr/winwal.git
+   cd winwal
+   ```
 
-To open your profile with code:
+2. Run the setup script to install dependencies:
+
+   ```powershell
+   ./setup-module.ps1
+   ```
+
+3. Update your PowerShell profile to import the module:
+
+   ```powershell
+   Import-Module /path/to/winwal/winwal.psm1
+   ```
+
+To open your profile with VS Code:
 
 ```powershell
 code $profile
 ```
+
+### Project Structure
+
+The project has been reorganized with a modular structure:
+
+- `src/Common/` - Common functionality shared across platforms
+- `src/Core/` - PowerShell Core specific implementation
+- `src/Windows/` - Windows PowerShell specific implementation
 
 ## Using
 
