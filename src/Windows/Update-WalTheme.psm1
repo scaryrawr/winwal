@@ -1,10 +1,12 @@
 # Update-WalTheme.psm1 - Windows PowerShell implementation of Update-WalTheme
 
-# Import required common module
-$commonDir = Join-Path -Path $PSScriptRoot -ChildPath "../Common"
-$commonWalModule = Join-Path -Path $commonDir -ChildPath "WalTheme.psm1"
+# Import required common modules
+$commonDir = Join-Path -Path $PSScriptRoot -ChildPath '../Common'
+$commonWalModule = Join-Path -Path $commonDir -ChildPath 'WalTheme.psm1'
+$backendCheckerModule = Join-Path -Path $commonDir -ChildPath 'BackendChecker.psm1'
 
 Import-Module -Name $commonWalModule -Force
+Import-Module -Name $backendCheckerModule -Force
 
 <#
 .DESCRIPTION
@@ -12,7 +14,7 @@ Import-Module -Name $commonWalModule -Force
 .PARAMETER Image
     Path to image to set as background. If not specified, current wallpaper is used.
 .PARAMETER Backend
-    The backend to use for color generation. Valid values are: 'wal', 'colorthief', 'colorz', 'haishoku', 'schemer2'
+    The backend to use for color generation. Available backends depend on installed software.
 .EXAMPLE
     Update-WalTheme -Image ~/Pictures/wallpaper.jpg -Backend haishoku
 .EXAMPLE
@@ -23,7 +25,7 @@ function Update-WalTheme {
     param(
         # Path to image to set as background, if not set current wallpaper is used
         [string]$Image,
-        [ValidateSet('wal', 'colorthief', 'colorz', 'haishoku', 'schemer2')]
+        [ValidateSet([AvailableBackends])]
         [string]$Backend = 'wal'
     )
 
