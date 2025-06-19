@@ -57,7 +57,7 @@ code $profile
 
 ## Using
 
-To update wal cache Windows Terminal Color Scheme using the current wallpaper:
+To update wal cache and terminal color schemes (Windows Terminal, WezTerm) using the current wallpaper:
 
 ```powershell
 Update-WalTheme
@@ -69,7 +69,7 @@ To use a different backend with the current wallpaper:
 Update-WalTheme -Backend haishoku
 ```
 
-To update wal cache, Windows Terminal Color Scheme, and set the desktop wallpaper:
+To update wal cache, terminal color schemes, and set the desktop wallpaper:
 
 ```powershell
 Update-WalTheme -Image .\path\to\new\background.jpg
@@ -93,6 +93,13 @@ There's also instructions in [pywal](https://github.com/dylanaraps/pywal) on set
 
 - [wal-theme](https://marketplace.visualstudio.com/items?itemName=dlasagno.wal-theme) - Wal Theme for VS Code
 - [GlassIt-VSC](https://marketplace.visualstudio.com/items?itemName=s-nlf-fh.glassit) - Transparency for VS Code
+
+## Supported Terminals
+
+winwal automatically updates color schemes for the following terminals:
+
+- [Windows Terminal](https://github.com/microsoft/terminal) - Built-in support on Windows
+- [WezTerm](https://wezfurlong.org/wezterm/) - Cross-platform terminal with automatic config detection
 
 ## Recommended PowerShell Modules
 
