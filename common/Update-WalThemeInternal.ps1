@@ -58,6 +58,11 @@ function Update-WalThemeInternal {
     Update-WalTerminal
   }
   
+  # Update WezTerm
+  if (Get-Command 'Update-WalWezTerm' -ErrorAction SilentlyContinue) {
+    Update-WalWezTerm
+  }
+  
   if (Get-Command 'Update-WalCommandPrompt' -ErrorAction SilentlyContinue) {
     Update-WalCommandPrompt
   }

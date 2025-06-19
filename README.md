@@ -75,7 +75,9 @@ To update wal cache, Windows Terminal Color Scheme, and set the desktop wallpape
 Update-WalTheme -Image .\path\to\new\background.jpg
 ```
 
-Notes: winwal will download [ColorTool](https://devblogs.microsoft.com/commandline/introducing-the-windows-console-colortool/) and use it to set the new default color schemes to cmd.exe.
+Notes: 
+- winwal will download [ColorTool](https://devblogs.microsoft.com/commandline/introducing-the-windows-console-colortool/) and use it to set the new default color schemes to cmd.exe.
+- WezTerm configuration files will be automatically updated if found in standard locations (`$HOME/.config/wezterm/wezterm.lua`, `$HOME/.wezterm.lua`, etc.).
 
 ## Keep WSL in sync
 
