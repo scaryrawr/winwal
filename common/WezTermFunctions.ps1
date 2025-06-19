@@ -1,6 +1,6 @@
 function Update-WalWezTerm {
-  # Check if the wal-wezterm theme file was generated
-  if (!(Test-Path -Path "$HOME/.cache/wal/wal-wezterm.toml")) {
+  # Check if the winwal-wezterm theme file was generated
+  if (!(Test-Path -Path "$HOME/.cache/wal/winwal-wezterm.toml")) {
     return
   }
 
@@ -43,10 +43,10 @@ function Update-WalWezTerm {
       }
     }
 
-    # Copy the wal-wezterm theme to the colors directory
+    # Copy the winwal-wezterm theme to the colors directory
     $destThemePath = Join-Path -Path $colorsDir -ChildPath "wal.toml"
     try {
-      Copy-Item -Path "$HOME/.cache/wal/wal-wezterm.toml" -Destination $destThemePath -Force
+      Copy-Item -Path "$HOME/.cache/wal/winwal-wezterm.toml" -Destination $destThemePath -Force
       Write-Host "Updated WezTerm color scheme: $destThemePath"
     }
     catch {
