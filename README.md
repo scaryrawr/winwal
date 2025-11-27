@@ -1,6 +1,6 @@
 # winwal
 
-A wrapper around [pywal](https://github.com/dylanaraps/pywal)/[pywal16](https://github.com/eylles/pywal16) for Windows.
+A wrapper around [pywal16](https://github.com/eylles/pywal16) for Windows. (Original [pywal](https://github.com/dylanaraps/pywal) has been archived by author, pywal16 is recommended moving forward).
 
 ![Cycle Image Demo](./assets/demo.gif)
 Art from [wallpaperhub](https://wallpaperhub.app/)
