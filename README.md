@@ -38,7 +38,7 @@ Note: PowerShell versions less that 6 don't support JSON with comments
 
 ```powershell
 winget install Python.Python.3.13
-pip install pywal colorthief colorz haishoku
+pip install pywal16 colorthief colorz haishoku
 ```
 
 ## Installing
