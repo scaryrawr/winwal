@@ -10,4 +10,3 @@ else {
 }
 
 Export-ModuleMember -Function Update-WalTheme, Get-CurrentTheme
-

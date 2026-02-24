@@ -1,0 +1,4 @@
+colorthief
+haishoku
+pywal16
+colorama
