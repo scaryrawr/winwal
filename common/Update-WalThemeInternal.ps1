@@ -2,6 +2,48 @@
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
 #>
+function Get-UserOhMyPoshConfigPath {
+  $profileCandidates = @(
+    $PROFILE.CurrentUserCurrentHost,
+    $PROFILE.CurrentUserAllHosts,
+    $PROFILE
+  ) | Where-Object { $_ } | Select-Object -Unique
+
+  $configPattern = '(?im)^\s*(?!#).*?\boh-my-posh\s+init\s+pwsh\b[^\r\n]*?(?:--config|-c)\s*(?:=|\s+)(?:"(?<config>[^"]+)"|''(?<config>[^'']+)''|(?<config>[^\s|;]+))'
+
+  foreach ($profilePath in $profileCandidates) {
+    if (-not (Test-Path -Path $profilePath)) {
+      continue
+    }
+
+    $profileContent = Get-Content -Path $profilePath -Raw -ErrorAction SilentlyContinue
+    if (-not $profileContent) {
+      continue
+    }
+
+    $match = [regex]::Match($profileContent, $configPattern)
+    if (-not $match.Success) {
+      continue
+    }
+
+    $rawConfigPath = $match.Groups['config'].Value.Trim()
+    if (-not $rawConfigPath) {
+      continue
+    }
+
+    if ($rawConfigPath.StartsWith('~')) {
+      $rawConfigPath = $rawConfigPath -replace '^~', $HOME
+    }
+
+    $expandedConfigPath = $ExecutionContext.InvokeCommand.ExpandString($rawConfigPath)
+    if (Test-Path -Path $expandedConfigPath) {
+      return $expandedConfigPath
+    }
+  }
+
+  return $null
+}
+
 function Update-WalThemeInternal {
   param(
     # Path to image to set as background, if not set current wallpaper is used
@@ -19,7 +61,7 @@ function Update-WalThemeInternal {
   # Add our templates to wal configuration
   Add-WalTemplates
 
-  $tempImg = "$env:TEMP/$(Split-Path $img -leaf)"
+  $tempImg = "$env:TEMP/$(Split-Path $img -Leaf)"
 
   # Use temp location, default backgrounds are in a write protected directory
   if (-not (Test-Path -Path $tempImg)) {
@@ -63,8 +105,17 @@ function Update-WalThemeInternal {
   }
 
   # New oh-my-posh
-  if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path -Path "$HOME/.cache/wal/posh-wal-agnoster.omp.json")) {
-    oh-my-posh init pwsh --config "$HOME/.cache/wal/posh-wal-agnoster.omp.json" | Invoke-Expression
+  if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    $defaultOhMyPoshConfig = "$HOME/.cache/wal/posh-wal-agnoster.omp.json"
+    $ohMyPoshConfig = Get-UserOhMyPoshConfigPath
+
+    if (-not $ohMyPoshConfig -and (Test-Path -Path $defaultOhMyPoshConfig)) {
+      $ohMyPoshConfig = $defaultOhMyPoshConfig
+    }
+
+    if ($ohMyPoshConfig) {
+      oh-my-posh init pwsh --config $ohMyPoshConfig | Invoke-Expression
+    }
   }
 
   # Check if pywal fox needs to update
