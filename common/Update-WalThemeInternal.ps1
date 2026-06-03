@@ -2,6 +2,55 @@
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
 #>
+function Get-WalCurrentWallpaper {
+  $wallpaper = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper -ErrorAction Stop).Wallpaper
+
+  if ((-not $wallpaper) -or (Test-WalTranscodedWallpaperPath -Path $wallpaper)) {
+    $cachedWallpaper = Get-WalTranscodedImageCacheWallpaper
+    if ($cachedWallpaper) {
+      return $cachedWallpaper
+    }
+  }
+
+  return $wallpaper
+}
+
+function Test-WalTranscodedWallpaperPath {
+  param(
+    [string]$Path
+  )
+
+  if (-not $Path) {
+    return $false
+  }
+
+  return ($Path -replace '/', '\') -like '*\Microsoft\Windows\Themes\TranscodedWallpaper*'
+}
+
+function Get-WalTranscodedImageCacheWallpaper {
+  $cache = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name TranscodedImageCache -ErrorAction SilentlyContinue).TranscodedImageCache
+  if (-not $cache) {
+    return $null
+  }
+
+  $decoded = [System.Text.Encoding]::Unicode.GetString($cache)
+  $imageExtensions = 'jpg|jpeg|png|bmp|gif|webp|tiff|tif|heic|heif|avif'
+  $pathPattern = "(?i)(?:[A-Z]:|\\\\[^\\/:*?`"<>|`0]+\\[^\\/:*?`"<>|`0]+)\\(?:[^\\/:*?`"<>|`0]+\\)*[^\\/:*?`"<>|`0]+\.(?:$imageExtensions)"
+  $matches = [regex]::Matches($decoded, $pathPattern)
+
+  if ($matches.Count -eq 0) {
+    return $null
+  }
+
+  foreach ($match in $matches) {
+    if (Test-Path -LiteralPath $match.Value -PathType Leaf) {
+      return $match.Value
+    }
+  }
+
+  return $matches[0].Value
+}
+
 function Update-WalThemeInternal {
   param(
     # Path to image to set as background, if not set current wallpaper is used
@@ -12,18 +61,23 @@ function Update-WalThemeInternal {
   # Determine image
   $img = $Image
   if (-not $img) {
-    $img = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper).Wallpaper
+    $img = Get-WalCurrentWallpaper
+  }
+
+  if (-not $img) {
+    Write-Error 'No image path specified and current wallpaper could not be detected.'
+    return
   }
 
   . $PSScriptRoot/templates.ps1
   # Add our templates to wal configuration
   Add-WalTemplates
 
-  $tempImg = "$env:TEMP/$(Split-Path $img -leaf)"
+  $tempImg = Join-Path -Path $env:TEMP -ChildPath (Split-Path -Path $img -Leaf)
 
   # Use temp location, default backgrounds are in a write protected directory
-  if (-not (Test-Path -Path $tempImg)) {
-    Copy-Item -Path $img -Destination $tempImg
+  if (-not (Test-Path -LiteralPath $tempImg)) {
+    Copy-Item -LiteralPath $img -Destination $tempImg
   }
 
   if (Get-Command 'wal' -ErrorAction SilentlyContinue) {
