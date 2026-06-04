@@ -3,7 +3,7 @@
     Updates wal templates and themes using a new image or the existing desktop image
 #>
 function Get-WalCurrentWallpaper {
-  $wallpaper = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper -ErrorAction Stop).Wallpaper
+  $wallpaper = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper -ErrorAction SilentlyContinue).Wallpaper
 
   if ((-not $wallpaper) -or (Test-WalTranscodedWallpaperPath -Path $wallpaper)) {
     $cachedWallpaper = Get-WalTranscodedImageCacheWallpaper
@@ -48,7 +48,7 @@ function Get-WalTranscodedImageCacheWallpaper {
     }
   }
 
-  return $matches[0].Value
+  return $null
 }
 
 function Update-WalThemeInternal {
@@ -76,8 +76,8 @@ function Update-WalThemeInternal {
   $tempImg = Join-Path -Path $env:TEMP -ChildPath (Split-Path -Path $img -Leaf)
 
   # Use temp location, default backgrounds are in a write protected directory
-  if (-not (Test-Path -LiteralPath $tempImg)) {
-    Copy-Item -LiteralPath $img -Destination $tempImg
+  if ($img -ne $tempImg) {
+    Copy-Item -LiteralPath $img -Destination $tempImg -Force
   }
 
   if (Get-Command 'wal' -ErrorAction SilentlyContinue) {
