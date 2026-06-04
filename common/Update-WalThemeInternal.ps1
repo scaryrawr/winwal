@@ -2,6 +2,73 @@
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
 #>
+function Resolve-OhMyPoshConfigPath {
+  param(
+    [string]$ConfigPath
+  )
+
+  if (-not $ConfigPath) {
+    return $null
+  }
+
+  $expandedConfigPath = $ConfigPath.Trim().Trim('"').Trim("'")
+  if ($expandedConfigPath.StartsWith('~')) {
+    $expandedConfigPath = $expandedConfigPath -replace '^~', $HOME
+  }
+
+  $expandedConfigPath = $ExecutionContext.InvokeCommand.ExpandString($expandedConfigPath)
+  $expandedConfigPath = [Environment]::ExpandEnvironmentVariables($expandedConfigPath)
+
+  if (Test-Path -Path $expandedConfigPath) {
+    return $expandedConfigPath
+  }
+
+  return $null
+}
+
+function Get-UserOhMyPoshConfigPath {
+  param(
+    [string]$ActiveThemePath = $env:POSH_THEME,
+    [string[]]$ProfilePaths = @(
+      $PROFILE.CurrentUserCurrentHost,
+      $PROFILE.CurrentUserAllHosts,
+      $PROFILE
+    )
+  )
+
+  $activeConfigPath = Resolve-OhMyPoshConfigPath -ConfigPath $ActiveThemePath
+  if ($activeConfigPath) {
+    return $activeConfigPath
+  }
+
+  $profileCandidates = $ProfilePaths | Where-Object { $_ } | Select-Object -Unique
+
+  $configPattern = '(?im)^\s*(?!#).*?\boh-my-posh\s+init\s+pwsh\b[^\r\n]*?(?:--config|-c)\s*(?:=|\s+)(?:"(?<config>[^"]+)"|''(?<config>[^'']+)''|(?<config>[^\s|;]+))'
+
+  foreach ($profilePath in $profileCandidates) {
+    if (-not (Test-Path -Path $profilePath)) {
+      continue
+    }
+
+    $profileContent = Get-Content -Path $profilePath -Raw -ErrorAction SilentlyContinue
+    if (-not $profileContent) {
+      continue
+    }
+
+    $match = [regex]::Match($profileContent, $configPattern)
+    if (-not $match.Success) {
+      continue
+    }
+
+    $expandedConfigPath = Resolve-OhMyPoshConfigPath -ConfigPath $match.Groups['config'].Value
+    if ($expandedConfigPath) {
+      return $expandedConfigPath
+    }
+  }
+
+  return $null
+}
+
 function Get-WalCurrentWallpaper {
   $wallpaper = (Get-ItemProperty -Path 'HKCU:/Control Panel/Desktop' -Name Wallpaper -ErrorAction SilentlyContinue).Wallpaper
 
@@ -116,9 +183,13 @@ function Update-WalThemeInternal {
     Update-WalCommandPrompt
   }
 
-  # New oh-my-posh
-  if ((Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and (Test-Path -Path "$HOME/.cache/wal/posh-wal-agnoster.omp.json")) {
-    oh-my-posh init pwsh --config "$HOME/.cache/wal/posh-wal-agnoster.omp.json" | Invoke-Expression
+  # Update the active Oh My Posh prompt without switching non-Oh-My-Posh users to winwal's generated prompt.
+  if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+    $ohMyPoshConfig = Get-UserOhMyPoshConfigPath
+
+    if ($ohMyPoshConfig) {
+      oh-my-posh init pwsh --config $ohMyPoshConfig | Invoke-Expression
+    }
   }
 
   # Check if pywal fox needs to update
