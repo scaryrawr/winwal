@@ -2,12 +2,46 @@
 .DESCRIPTION
     Updates wal templates and themes using a new image or the existing desktop image
 #>
+function Resolve-OhMyPoshConfigPath {
+  param(
+    [string]$ConfigPath
+  )
+
+  if (-not $ConfigPath) {
+    return $null
+  }
+
+  $expandedConfigPath = $ConfigPath.Trim().Trim('"').Trim("'")
+  if ($expandedConfigPath.StartsWith('~')) {
+    $expandedConfigPath = $expandedConfigPath -replace '^~', $HOME
+  }
+
+  $expandedConfigPath = $ExecutionContext.InvokeCommand.ExpandString($expandedConfigPath)
+  $expandedConfigPath = [Environment]::ExpandEnvironmentVariables($expandedConfigPath)
+
+  if (Test-Path -Path $expandedConfigPath) {
+    return $expandedConfigPath
+  }
+
+  return $null
+}
+
 function Get-UserOhMyPoshConfigPath {
-  $profileCandidates = @(
-    $PROFILE.CurrentUserCurrentHost,
-    $PROFILE.CurrentUserAllHosts,
-    $PROFILE
-  ) | Where-Object { $_ } | Select-Object -Unique
+  param(
+    [string]$ActiveThemePath = $env:POSH_THEME,
+    [string[]]$ProfilePaths = @(
+      $PROFILE.CurrentUserCurrentHost,
+      $PROFILE.CurrentUserAllHosts,
+      $PROFILE
+    )
+  )
+
+  $activeConfigPath = Resolve-OhMyPoshConfigPath -ConfigPath $ActiveThemePath
+  if ($activeConfigPath) {
+    return $activeConfigPath
+  }
+
+  $profileCandidates = $ProfilePaths | Where-Object { $_ } | Select-Object -Unique
 
   $configPattern = '(?im)^\s*(?!#).*?\boh-my-posh\s+init\s+pwsh\b[^\r\n]*?(?:--config|-c)\s*(?:=|\s+)(?:"(?<config>[^"]+)"|''(?<config>[^'']+)''|(?<config>[^\s|;]+))'
 
@@ -26,17 +60,8 @@ function Get-UserOhMyPoshConfigPath {
       continue
     }
 
-    $rawConfigPath = $match.Groups['config'].Value.Trim()
-    if (-not $rawConfigPath) {
-      continue
-    }
-
-    if ($rawConfigPath.StartsWith('~')) {
-      $rawConfigPath = $rawConfigPath -replace '^~', $HOME
-    }
-
-    $expandedConfigPath = $ExecutionContext.InvokeCommand.ExpandString($rawConfigPath)
-    if (Test-Path -Path $expandedConfigPath) {
+    $expandedConfigPath = Resolve-OhMyPoshConfigPath -ConfigPath $match.Groups['config'].Value
+    if ($expandedConfigPath) {
       return $expandedConfigPath
     }
   }
@@ -104,14 +129,9 @@ function Update-WalThemeInternal {
     Update-WalCommandPrompt
   }
 
-  # New oh-my-posh
+  # Update the active Oh My Posh prompt without switching non-Oh-My-Posh users to winwal's generated prompt.
   if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-    $defaultOhMyPoshConfig = "$HOME/.cache/wal/posh-wal-agnoster.omp.json"
     $ohMyPoshConfig = Get-UserOhMyPoshConfigPath
-
-    if (-not $ohMyPoshConfig -and (Test-Path -Path $defaultOhMyPoshConfig)) {
-      $ohMyPoshConfig = $defaultOhMyPoshConfig
-    }
 
     if ($ohMyPoshConfig) {
       oh-my-posh init pwsh --config $ohMyPoshConfig | Invoke-Expression
