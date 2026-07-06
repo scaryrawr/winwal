@@ -55,6 +55,30 @@ To open your profile with code:
 code $profile
 ```
 
+### PowerShell profile and Oh My Posh
+
+Add winwal to your PowerShell `$PROFILE` so `Update-WalTheme` is available in new terminals. If you cloned this repo to `C:\Users\you\GitHub\winwal`, use:
+
+```powershell
+Import-Module "C:\Users\you\GitHub\winwal\winwal.psm1"
+```
+
+If you use Oh My Posh, keep your own theme initialization in `$PROFILE` with a `--config` path:
+
+```powershell
+oh-my-posh init pwsh --config "$HOME\.config\oh-my-posh\my-theme.omp.json" | Invoke-Expression
+```
+
+Then run winwal when you want to refresh colors:
+
+```powershell
+Update-WalTheme
+```
+
+On later runs, winwal updates the wal cache and templates, detects the active Oh My Posh config from `$env:POSH_THEME` or from `oh-my-posh init pwsh --config ...` / `-c ...` lines in your PowerShell profile, and refreshes that same config. If the detected config points to a wal-generated Oh My Posh theme, the refreshed prompt uses the new wal colors; winwal does not switch you to a bundled theme.
+
+If you do not use Oh My Posh, do not add an Oh My Posh line. Starship and other prompt users can keep their existing profile setup; winwal only refreshes Oh My Posh when `oh-my-posh` is installed and a supported config path is detected.
+
 ## Using
 
 To update wal cache Windows Terminal Color Scheme using the current wallpaper:
